@@ -412,9 +412,8 @@ body::before {
 }
 .gewerke__stage-solid svg { width: 52px; height: 52px; color: rgba(20,16,12,.75); margin-bottom: auto; }
 .gewerke__stage-solid span { font-family: var(--font-mono); font-size: var(--step--1); color: rgba(20,16,12,.6); }
-.gewerke__stage-compare { position: relative; display: grid; grid-template-columns: 1fr; gap: 2px; background: var(--line); }
-.gewerke__stage-compare .gewerke__compare-item img { aspect-ratio: 4 / 3; }
-.gewerke__stage-compare .gewerke__compare-badge svg { transform: rotate(90deg); }
+.gewerke__stage-compare { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--line); }
+.gewerke__stage-compare .gewerke__compare-item img { aspect-ratio: 4 / 5; }
 .gewerke__stage-solid strong {
   display: block; font-family: var(--font-display); font-size: clamp(2.2rem, 2vw + 1.6rem, 3.4rem);
   color: #14100c; text-transform: uppercase; line-height: 0.95; margin-top: 0.4rem;
