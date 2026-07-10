@@ -578,6 +578,8 @@ body::before {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
+  .masthead.is-scrolled { background: var(--bg); backdrop-filter: none; }
+
   .chapter--auftrag .chapter__grid { grid-template-columns: 1fr; }
   .chapter__pull { position: static; border-left: none; border-top: 3px solid var(--rust); padding-left: 0; padding-top: 1.2rem; margin-top: 2rem; }
 
