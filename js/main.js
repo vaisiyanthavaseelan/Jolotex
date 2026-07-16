@@ -114,7 +114,10 @@
     trockenbau: { index: "04", name: "Trockenbau", blocks: [
       { type: "pair",
         before: ["assets/images/optimized/pf-trockenbau-g5-480.webp", "Zimmer vorher: offene Decke, entkernte Wände, Rohzustand"],
-        after: ["assets/images/optimized/pf-trockenbau-g6-480.webp", "Zimmer nachher: verputzte Wände, neue Decke, bezugsfertig"] }
+        after: ["assets/images/optimized/pf-trockenbau-g6-480.webp", "Zimmer nachher: verputzte Wände, neue Decke, bezugsfertig"] },
+      { type: "pair",
+        before: ["assets/images/optimized/pf-trockenbau-g7-480.webp", "Dachgeschoss vorher: offener Dachstuhl mit Dämmung und Rohboden"],
+        after: ["assets/images/optimized/pf-trockenbau-g8-480.webp", "Dachgeschoss nachher: ausgebauter Raum mit Dachfenstern und Fußboden"] }
     ] },
     fliesen: { index: "05", name: "Fliesen", blocks: [
       { type: "pair",
@@ -192,11 +195,13 @@
           trigger.setAttribute("aria-expanded", "true");
           setPanelHeight(item, true);
           setStage(key);
-          setTimeout(function () {
-            var offset = parseFloat(getComputedStyle(item).scrollMarginTop) || 0;
-            var targetY = item.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: targetY, behavior: "smooth" });
-          }, 420);
+          if (window.matchMedia("(max-width: 900px)").matches) {
+            setTimeout(function () {
+              var offset = parseFloat(getComputedStyle(item).scrollMarginTop) || 0;
+              var targetY = item.getBoundingClientRect().top + window.scrollY - offset;
+              window.scrollTo({ top: targetY, behavior: "smooth" });
+            }, 420);
+          }
         }
       });
       trigger.addEventListener("mouseenter", function () { setStage(key); });
@@ -295,22 +300,31 @@
       }
 
       var data = new FormData(form);
-      var leistung = data.get("leistung") || "Allgemeine Anfrage";
-      var subject = "Anfrage über jolotex.de: " + leistung;
-      var bodyLines = [
-        "Name: " + data.get("name"),
-        "E-Mail: " + data.get("email"),
-        "Telefon: " + (data.get("telefon") || "-"),
-        "Leistung: " + leistung,
-        "",
-        "Nachricht:",
-        data.get("nachricht")
-      ];
-      var mailto = "mailto:info@jolotex.de?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(bodyLines.join("\n"));
-      window.location.href = mailto;
+      var submitBtn = form.querySelector(".btn-send");
+      var submitLabel = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Wird gesendet …";
 
-      status.textContent = "Ihr E-Mail-Programm öffnet sich mit den ausgefüllten Angaben. Bitte senden Sie die Nachricht dort final ab.";
-      status.classList.add("is-visible", "is-success");
+      fetch("kontakt.php", { method: "POST", body: data })
+        .then(function (res) { return res.json(); })
+        .then(function (res) {
+          if (res.ok) {
+            status.textContent = "Vielen Dank! Ihre Anfrage ist angekommen — wir melden uns zeitnah.";
+            status.classList.add("is-visible", "is-success");
+            form.reset();
+          } else {
+            status.textContent = "Fehler: " + (res.error || "Unbekannter Fehler. Bitte versuchen Sie es erneut.");
+            status.classList.add("is-visible", "is-error");
+          }
+        })
+        .catch(function () {
+          status.textContent = "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.";
+          status.classList.add("is-visible", "is-error");
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = submitLabel;
+        });
     });
 
     form.querySelectorAll("input, select, textarea").forEach(function (field) {
